@@ -2,6 +2,7 @@
   <dictionary name="lucam">
     <words>
       <w>arith</w>
+      <w>coeff</w>
     </words>
   </dictionary>
 </component>

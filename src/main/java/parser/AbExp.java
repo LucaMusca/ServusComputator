@@ -1,6 +1,6 @@
 package parser;
 
-public abstract class AbExp {
+public abstract class AbExp{
 
     public static AbExp toAbExp(String string) {
         return toAbExp(new Expression(string));
@@ -75,13 +75,22 @@ public abstract class AbExp {
     public boolean is(double x){
         return (this instanceof AbNum) && ((AbNum) this).getValue()== x;
     }
-    public boolean is(Class<? extends Token> c){
+    public boolean is(Class<?> c){
         Class<?> t = getClass();
        if(t==AbOp.class){
-           return ((AbOp) this).operator.getClass() == c;
+           return ((AbOp) this).operator.getClass() == c || c == Operator.class;
        }
+        if(t==AbCost.class){
+            return ((AbCost) this).c.getClass() == c || c == Constant.class;
+        }
         if(t==AbFun.class){
-            return ((AbFun) this).function.getClass() == c;
+            return ((AbFun) this).function.getClass() == c || c == Function.class;
+        }
+        if(t==AbNum.class){
+            return c == Number.class;
+        }
+        if(t==AbVar.class){
+            return ((AbVar) this).variable.getClass() == c || c == Variable.class;
         }
        return false;
     }
@@ -89,24 +98,17 @@ public abstract class AbExp {
         return is(Plus.class) || is(Minus.class);
     }
 
-    public AbExp group(){
-        if(this.is(Times.class)){
-            return Factors.fromTimes( ((AbOp) this).left, ((AbOp) this).right);
-        }
-        if(this.is(Divide.class)){
-            return Factors.fromDivide( ((AbOp) this).left, ((AbOp) this).right);
-        }
-        //TODO: it doesn't enter in the tree
-        return this;
-    }
+    abstract public AbExp group();
+
 
     @Override
     public String toString() {
         return stamp(null);
     }
 
-    public String stamp(AbExp abExp) {  //AbExp is parent
-        return super.toString();
-    }
+
+    abstract public String stamp(AbExp abExp); // abExp is parent
+
+    public abstract AbExp copy();
 }
 

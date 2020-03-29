@@ -30,13 +30,18 @@ public class AbFun extends AbExp {
     }
 
     @Override
+    public AbExp copy() {
+        return new AbFun(function, arg.copy());
+    }
+
+    @Override
     double eval(double... in) {
         return function.operation.fun(arg.eval(in));
     }
 
     AbExp der(Variable v) {
         return new AbOp(function.derivative.fun(arg), Parser.times,arg.der(v));
-    }
+    } //chain rule
 
     @Override
     AbExp simplify() {
@@ -58,4 +63,10 @@ public class AbFun extends AbExp {
          return this;
      }
 
- }
+    @Override
+    public AbExp group() {
+        arg = arg.group();
+        return this;
+    }
+
+}

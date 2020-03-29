@@ -59,7 +59,17 @@ public class AbVar extends AbExp{
     }
 
     @Override
+    public AbExp group() {
+        return this;
+    }
+
+    @Override
     public String stamp(AbExp abExp) {
         return variable.toString();
+    }
+
+    @Override
+    public AbExp copy() {
+        return this;
     }
 }

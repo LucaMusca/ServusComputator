@@ -57,13 +57,14 @@ class Ln extends Function {
 
 class MinFun extends Function {
      MinFun() {
-        super("-", a -> -a, t -> new AbFun(Parser.mn, t)); //TODO derivative is probably wrong
+        super("-", a -> -a, t -> AbNum.Num(-1)); //TODO derivative is probably wrong
     }
 }
 
 class Sqrt extends Function{
     Sqrt() {
-        super("sqrt", Math::sqrt, t -> new AbOp(AbNum.Num(1), Parser.divide, new AbOp(AbNum.Num(2),Parser.times,new AbFun(new Sqrt(),t))));
+        super("sqrt", Math::sqrt, t -> new AbOp(AbNum.Num(1), Parser.divide,
+                new AbOp(AbNum.Num(2),Parser.times,new AbFun(new Sqrt(),t))));
     }
 }
 

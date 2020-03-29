@@ -32,7 +32,17 @@ public class AbCost extends AbExp{
     }
 
     @Override
+    public AbExp group() {
+        return this;
+    }
+
+    @Override
     public String stamp(AbExp abExp) {
         return c.getString();
+    }
+
+    @Override
+    public AbExp copy() {
+        return this;
     }
 }

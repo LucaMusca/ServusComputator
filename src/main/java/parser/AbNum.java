@@ -39,6 +39,11 @@ public class AbNum extends AbExp {
     }
 
     @Override
+    public AbExp copy() {
+        return this;
+    }
+
+    @Override
     double eval(double... in) {
         return value;
     }
@@ -60,5 +65,16 @@ public class AbNum extends AbExp {
     @Override
     AbExp set(Variable v, AbExp x) {
         return this;
+    }
+
+    @Override
+    public AbExp group() {
+        return this;
+    }
+
+    public static double getNum(AbExp a){
+        AbNum n = (AbNum) a;
+        return n.value;
+
     }
 }

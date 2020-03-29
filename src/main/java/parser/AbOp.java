@@ -37,6 +37,11 @@ public class AbOp extends AbExp {
     }
 
     @Override
+    public AbExp copy() {
+        return new AbOp(left.copy(),operator,right.copy());
+    }
+
+    @Override
     double eval(double... in) {
         return operator.operate(left.eval(in),right.eval(in));
     }
@@ -68,4 +73,24 @@ public class AbOp extends AbExp {
          right = right.set(v,x);
          return this;
      }
- }
+
+    @Override
+    public AbExp group() {
+        if(this.is(Times.class)){
+            return Factors.fromTimes( ((AbOp) this).left, ((AbOp) this).right);
+        }
+        if(this.is(Divide.class)){
+            return Factors.fromDivide( ((AbOp) this).left, ((AbOp) this).right);
+        }
+        if(this.is(Plus.class)){
+            return Addends.fromPlus( ((AbOp) this).left, ((AbOp) this).right);
+        }
+        if(this.is(Minus.class)){
+            return Addends.fromMinus( ((AbOp) this).left, ((AbOp) this).right);
+        }
+        left = left.group();
+        right = right.group();
+        //TODO: pow
+        return this;
+    }
+}

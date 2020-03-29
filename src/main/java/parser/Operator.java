@@ -121,8 +121,9 @@ class Divide extends Operator{
                         new AbOp(e2,Parser.times,e2)) // e2^2
         );
         simplifiers.addAll(List.of(
-              //  (e1, e2) -> new Tuple(e1.is(0) , AbNum.Num()(0)),
-               // (e1, e2) -> new Tuple(e1.equals(e2),AbNum.Num()(1))
+                (e1, e2) -> new Tuple(e1.is(0) , AbNum.Num(0)),
+                (e1, e2) -> new Tuple(e2.is(1) , e1),
+                (e1, e2) -> new Tuple(e1.equals(e2),AbNum.Num(1))
         ));
     }
 
