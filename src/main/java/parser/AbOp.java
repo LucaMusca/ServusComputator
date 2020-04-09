@@ -74,7 +74,33 @@ public class AbOp extends AbExp {
          return this;
      }
 
-    @Override
+     public AbExp group(){
+         if(this.is(Plus.class)){
+             return AddendsMap.merge( new AddendsMap(this.left.group()),
+                     new AddendsMap(this.right.group()));
+         }
+         if(this.is(Minus.class)){
+             return AddendsMap.merge( new AddendsMap(this.left.group()),
+                     AddendsMap.invert(new AddendsMap(this.right.group())));
+         }
+         if(this.is(Times.class)){
+             return FactorsMap.merge( new FactorsMap(this.left.group()),
+                     new FactorsMap(this.right.group()));
+         }
+         if(this.is(Pow.class)){
+            return new FactorsMap(this);
+         }
+         if(this.is(Divide.class)){
+             return FactorsMap.merge( new FactorsMap(this.left.group()),
+                     FactorsMap.invert(new FactorsMap(this.right.group())));
+         }
+
+         left = left.group();
+         right = right.group();
+         return this;
+     }
+
+   /*  @Override
     public AbExp group() {
         if(this.is(Times.class)){
             return Factors.fromTimes( ((AbOp) this).left, ((AbOp) this).right);
@@ -92,5 +118,5 @@ public class AbOp extends AbExp {
         right = right.group();
         //TODO: pow
         return this;
-    }
+    }*/
 }

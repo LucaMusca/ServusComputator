@@ -22,14 +22,12 @@ public class Function extends Token {
     }
 
     interface Derivative {
-       AbExp fun(AbExp t);
+        AbExp fun(AbExp t);
     }
-
     @FunctionalInterface
     interface Operation {
         double fun(double t1);
     }
-
 }
 
 class Sin extends Function {
@@ -42,6 +40,13 @@ class Cos extends Function {
         super("cos", Math::cos, t -> new AbOp(AbNum.Num(0), Parser.minus, new AbFun(new Sin(), t)));
     }
 }
+
+class Tan extends Function {
+    Tan() {
+        super("tan", Math::tan, t -> new AbOp(new AbFun(new Cos(), t), Parser.pow, AbNum.Num(-2)));
+    }
+}
+
 
 class Exp extends Function {
     Exp() {
@@ -57,7 +62,7 @@ class Ln extends Function {
 
 class MinFun extends Function {
      MinFun() {
-        super("-", a -> -a, t -> AbNum.Num(-1)); //TODO derivative is probably wrong
+        super("-", a -> -a, t -> AbNum.Num(-1));
     }
 }
 

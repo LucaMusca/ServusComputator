@@ -138,16 +138,13 @@ public class Expression extends Token {
     }
 
     public void nestNotAr() {
-
-        for (int i = 0; i < tokens.size(); i++) {
+                    // I reversed the direction of the loop without checking( to have correct parsing of '^')
+                    // reverse it back if something weird is happening
+        for (int i = tokens.size() - 1; i >= 0; i--) {
             Token t = tokens.get(i);
             if (t instanceof Operator && !(t instanceof Plus) &&  !(t instanceof Minus)) {
-                if (i == tokens.size() - 1)
+                if (i == tokens.size() - 1 || i == 0)
                     throw new UnexpectedToken(t);
-                if (i == 0) {
-                    tokens.add(0, new Number(0)); //if the operator is in the first position
-                    i++;
-                }
                 if (tokens.get(i + 1) instanceof Expression)
                     ((Expression) tokens.get(i + 1)).nest();
                 if (tokens.get(i - 1) instanceof Expression)

@@ -22,9 +22,11 @@ public class Parser {
     static Function sin = new Sin();
     static Function cos = new Cos();
     static Function exp = new Exp();
+    static Function tan = new Tan();
     static Function ln = new Ln();
     static Function mn = new MinFun(); // instantiated to have it as a singleton: it's not put in knownToken, not to clash with "-"
     static Function sqrt = new Sqrt();
+
 
     static {
 
@@ -40,6 +42,7 @@ public class Parser {
                 new Constant("e", Math.E),
                 sin,
                 cos,
+                tan,
                 exp,
                 ln,
                 sqrt
