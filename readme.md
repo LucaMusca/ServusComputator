@@ -1,1 +1,1 @@
-# A symbolic expressions evaluator written in Java
+# Symbolic expressions evaluation in Java
