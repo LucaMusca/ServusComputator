@@ -1,5 +1,5 @@
 # Symbolic expressions evaluation in Java
-## Example usage
+## Examples of usage
 You can create new variables using `Parser::newVariable`.
 
 ```Java
