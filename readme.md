@@ -1,4 +1,4 @@
-# Symbolic expressions evaluation in Java
+# Algebraic expressions parser and evaluator in Java
 ## Examples of usage
 You can create new variables using `Parser::newVariable`.
 
@@ -12,7 +12,7 @@ And then use them in expressions
 AbExp distance = AbExp.toAbExp("sqrt(x^2 + y^2)");
 AbExp e = AbExp.toAbExp("sin(alpha) + x");
 ```
-Once you have a `AbExp`, you can carry out several operations on it, like expression evaluations or derivatives.
+Once you have a `AbExp`, you can carry out several operations on it, like expression evaluation or derivative.
 ```Java
 e.set(alpha,distance)
 >>> sin(sqrt(x^2 + y^2)) + x
