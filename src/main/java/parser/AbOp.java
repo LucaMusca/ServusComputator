@@ -42,8 +42,8 @@ public class AbOp extends AbExp {
     }
 
     @Override
-    double eval(double... in) {
-        return operator.operate(left.eval(in),right.eval(in));
+    AbNum eval(double... in) {
+        return AbNum.Num(operator.operate(left.eval(in).getValue(), right.eval(in).getValue()));
     }
 
     AbExp der(Variable v) {
@@ -57,48 +57,48 @@ public class AbOp extends AbExp {
         if(left instanceof AbNum && right instanceof AbNum) { //TODO fix combination of divide and times
             return AbNum.Num(operator.operate(((AbNum) left).getValue(),((AbNum) right).getValue()));
         }
-        return operator.simplify(left,right);
+        return operator.simplify(left, right);
     }
 
-     @Override
-     AbExp set(Variable v, double x) {
-         left = left.set(v,x);
-         right = right.set(v,x);
-         return this;
-     }
+    @Override
+    AbExp set(Variable v, double x) {
+        left = left.set(v, x);
+        right = right.set(v, x);
+        return this;
+    }
 
-     @Override
-     AbExp set(Variable v, AbExp x) {
-         left = left.set(v,x);
-         right = right.set(v,x);
-         return this;
-     }
+    @Override
+    AbExp set(Variable v, AbExp x) {
+        left = left.set(v, x);
+        right = right.set(v, x);
+        return this;
+    }
 
-     public AbExp group(){
-         if(this.is(Plus.class)){
-             return AddendsMap.merge( new AddendsMap(this.left.group()),
-                     new AddendsMap(this.right.group()));
-         }
-         if(this.is(Minus.class)){
-             return AddendsMap.merge( new AddendsMap(this.left.group()),
-                     AddendsMap.invert(new AddendsMap(this.right.group())));
-         }
-         if(this.is(Times.class)){
-             return FactorsMap.merge( new FactorsMap(this.left.group()),
-                     new FactorsMap(this.right.group()));
-         }
-         if(this.is(Pow.class)){
-            return new FactorsMap(this);
-         }
-         if(this.is(Divide.class)){
-             return FactorsMap.merge( new FactorsMap(this.left.group()),
-                     FactorsMap.invert(new FactorsMap(this.right.group())));
-         }
+    public AbExp group() {
+        if (this.is(Plus.class)) {
+            return AddendsMap.merge(new AddendsMap(this.left.group()),
+                    new AddendsMap(this.right.group()));
+        }
+        if (this.is(Minus.class)) {
+            return AddendsMap.merge(new AddendsMap(this.left.group()),
+                    AddendsMap.invert(new AddendsMap(this.right.group())));
+        }
+        if (this.is(Times.class)) {
+            return Factors.merge(new Factors(this.left.group()),
+                    new Factors(this.right.group()));
+        }
+        if (this.is(Pow.class)) {
+            return new Factors(this);
+        }
+        if (this.is(Divide.class)) {
+            return Factors.mergeInverse(new Factors(this.left.group()),
+                    new Factors(this.right.group()));
+        }
 
-         left = left.group();
-         right = right.group();
-         return this;
-     }
+        left = left.group();
+        right = right.group();
+        return this;
+    }
 
    /*  @Override
     public AbExp group() {

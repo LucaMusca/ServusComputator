@@ -31,32 +31,53 @@ public class Function extends Token {
 }
 
 class Sin extends Function {
-    Sin() {
-        super("sin", Math::sin, t -> new AbFun(new Cos(), t));
+    private static Sin instance;
+
+    private Sin() {
+        super("sin", Math::sin, t -> AbFun.create(Cos.getInstance(), t));
+    }
+
+    public static Sin getInstance() {
+        if (instance == null) {
+            instance = new Sin();
+            return instance;
+        }
+        return instance;
     }
 }
+
 class Cos extends Function {
-    Cos() {
-        super("cos", Math::cos, t -> new AbOp(AbNum.Num(0), Parser.minus, new AbFun(new Sin(), t)));
+    static private Cos instance;
+
+    private Cos() {
+        super("cos", Math::cos, t -> new AbOp(AbNum.Num(0), Parser.minus, AbFun.create(Sin.getInstance(), t)));
+    }
+
+    public static Cos getInstance() {
+        if (instance == null) {
+            instance = new Cos();
+            return instance;
+        }
+        return instance;
     }
 }
 
 class Tan extends Function {
     Tan() {
-        super("tan", Math::tan, t -> new AbOp(new AbFun(new Cos(), t), Parser.pow, AbNum.Num(-2)));
+        super("tan", Math::tan, t -> new AbOp(AbFun.create(Cos.getInstance(), t), Parser.pow, AbNum.Num(-2)));
     }
 }
 
 
 class Exp extends Function {
     Exp() {
-        super("exp", Math::exp, t -> new AbFun(new Exp(), t));
+        super("exp", Math::exp, t -> AbFun.create(new Exp(), t));
     }
 }
 
 class Ln extends Function {
     Ln() {
-        super("ln", Math::log, t -> new AbOp(AbNum.Num(1), Parser.divide, t));
+        super("ln", Math::log, t -> new Factors(t, -1));
     }
 }
 
@@ -69,9 +90,20 @@ class MinFun extends Function {
 class Sqrt extends Function{
     Sqrt() {
         super("sqrt", Math::sqrt, t -> new AbOp(AbNum.Num(1), Parser.divide,
-                new AbOp(AbNum.Num(2),Parser.times,new AbFun(new Sqrt(),t))));
+                new AbOp(AbNum.Num(2), Parser.times, AbFun.create(new Sqrt(), t))));
     }
 }
 
+class DifferentialOperator extends Function {
+    Variable[] variables;
 
+    DifferentialOperator(String s, Variable... v) {
+        super(s, t1 -> {
+            throw new IllegalArgumentException();
+        }, t2 -> {
+            throw new IllegalArgumentException();
+        });
+        this.variables = v;
+    }
 
+}

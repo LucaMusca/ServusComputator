@@ -23,11 +23,11 @@ public class AbVar extends AbExp{
     }
 
 
-    double eval(double... in) {
+    AbNum eval(double... in) {
         int i = Parser.variables.indexOf(variable);
-        if(i!=-1) //variable is in variables
-            if(i < in.length)
-                return in[i];
+        if (i != -1) //variable is in variables
+            if (i < in.length)
+                return AbNum.Num(in[i]);
             else
                 throw new RuntimeException("No argument provided for variable " + stamp(this));
         throw new RuntimeException("cannot evaluate variable " + stamp(this));

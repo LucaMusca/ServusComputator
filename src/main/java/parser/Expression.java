@@ -138,11 +138,25 @@ public class Expression extends Token {
     }
 
     public void nestNotAr() {
-                    // I reversed the direction of the loop without checking( to have correct parsing of '^')
-                    // reverse it back if something weird is happening
+        // I reversed the direction of the loop without checking( to have correct parsing of '^')
+        // reverse it back if something weird is happening
         for (int i = tokens.size() - 1; i >= 0; i--) {
             Token t = tokens.get(i);
-            if (t instanceof Operator && !(t instanceof Plus) &&  !(t instanceof Minus)) {
+            if (t instanceof Pow) {
+                if (i == tokens.size() - 1 || i == 0)
+                    throw new UnexpectedToken(t);
+                if (tokens.get(i + 1) instanceof Expression)
+                    ((Expression) tokens.get(i + 1)).nest();
+                if (tokens.get(i - 1) instanceof Expression)
+                    ((Expression) tokens.get(i - 1)).nest();
+                Token result = new Expression(tokens.get(i - 1), tokens.get(i), tokens.get(i + 1));
+                tokens = nestSubExp(i - 1, i + 1, result);
+                i--;
+            }
+        }
+        for (int i = tokens.size() - 1; i >= 0; i--) {
+            Token t = tokens.get(i);
+            if (t instanceof Operator && !(t instanceof Plus) && !(t instanceof Minus)) {
                 if (i == tokens.size() - 1 || i == 0)
                     throw new UnexpectedToken(t);
                 if (tokens.get(i + 1) instanceof Expression)

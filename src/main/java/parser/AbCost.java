@@ -8,8 +8,8 @@ public class AbCost extends AbExp{
     }
 
     @Override
-    double eval(double... in) {
-        return c.getValue();
+    AbNum eval(double... in) {
+        return AbNum.Num(c.getValue());
     }
 
     @Override

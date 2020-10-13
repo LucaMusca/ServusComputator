@@ -3,7 +3,7 @@ package parser;
 public abstract class AbExp{
 
     public static AbExp toAbExp(String string) {
-        return toAbExp(new Expression(string));
+        return toAbExp(new Expression(string)).group().simplify();
     }
 
     static AbExp toAbExp(Token token) {
@@ -36,7 +36,7 @@ public abstract class AbExp{
                     case 3:
                         return new AbOp(toAbExpCore(tokens.get(0)), (Operator) tokens.get(1), toAbExpCore(tokens.get(2)));
                     case 2:
-                        return new AbFun((Function) tokens.get(0), toAbExpCore(tokens.get(1)));
+                        return AbFun.create((Function) tokens.get(0), toAbExpCore(tokens.get(1)));
                     case 1:
                         var t = tokens.get(0);
                         if (t instanceof Expression)
@@ -65,41 +65,53 @@ public abstract class AbExp{
         throw new UnexpectedToken(token);
     }
 
-    abstract double eval(double... in);
-    abstract AbExp der(Variable v);
+    abstract AbNum eval(double... in);
+
+    abstract AbExp der(Variable v); // immutable
+
     abstract AbExp simplify();
 
     abstract AbExp set(Variable v, double x);
+
     abstract AbExp set(Variable v, AbExp x);
 
-    public boolean is(double x){
-        return (this instanceof AbNum) && ((AbNum) this).getValue()== x;
+    public boolean is(double x) {
+        return (this instanceof AbNum) && ((AbNum) this).getValue() == x;
     }
-    public boolean is(Class<?> c){
+
+    public boolean is(Class<?> c) {
         Class<?> t = getClass();
-       if(t==AbOp.class){
-           return ((AbOp) this).operator.getClass() == c || c == Operator.class;
-       }
-        if(t==AbCost.class){
+        if (t == AbOp.class) {
+            return ((AbOp) this).operator.getClass() == c || c == Operator.class;
+        }
+        if (t == AbCost.class) {
             return ((AbCost) this).c.getClass() == c || c == Constant.class;
         }
-        if(t==AbFun.class){
+        if (t == AbFun.class) {
             return ((AbFun) this).function.getClass() == c || c == Function.class;
         }
-        if(t==AbNum.class){
+        if (t == AbNum.class) {
             return c == Number.class;
         }
-        if(t==AbVar.class){
+        if (t == AbVar.class) {
             return ((AbVar) this).variable.getClass() == c || c == Variable.class;
         }
-       return false;
+        return false;
     }
-    public boolean isArith(){
+
+    public boolean isArith() {
         return is(Plus.class) || is(Minus.class);
     }
 
     abstract public AbExp group();
 
+    AbExp taylorExpand(Variable x, AbExp x0, int terms) {
+        return Utils.taylorGroup(this, x, x0, terms);
+    }
+
+    AbExp taylorExpand(Variable x, double x0, int terms) {
+        return Utils.taylorGroup(this, x, x0, terms);
+    }
 
     @Override
     public String toString() {
@@ -108,6 +120,7 @@ public abstract class AbExp{
 
 
     abstract public String stamp(AbExp abExp); // abExp is parent
+
 
     public abstract AbExp copy();
 }

@@ -10,17 +10,20 @@ public class Parser {
     static final int MAX_LENGTH;
     static Map<String, Token> knownTokens;
     public static List<Variable> variables;
+    public static List<Variable> functions;
 
     static Operator minus = new Minus();
-    static Delimiter left = new Left("(");
-    static Delimiter right = new Right(")");
+    static Delimiter leftR = new Left("(");
+    static Delimiter rightR = new Right(")");
+    static Delimiter leftS = new Left("[");
+    static Delimiter rightS = new Right("]");
     static Operator plus = new Plus();
     public static Operator times = new Times();
     static Operator divide = new Divide();
     //make singleton classes
     static Operator pow = new Pow();
-    static Function sin = new Sin();
-    static Function cos = new Cos();
+    static Function sin = Sin.getInstance();
+    static Function cos = Cos.getInstance();
     static Function exp = new Exp();
     static Function tan = new Tan();
     static Function ln = new Ln();
@@ -31,8 +34,10 @@ public class Parser {
     static {
 
         List<Token> tokenList = List.of(
-                left,
-                right,
+                leftR,
+                rightR,
+                leftS,
+                rightS,
                 plus,
                 minus,
                 times,
@@ -49,17 +54,25 @@ public class Parser {
         );
         knownTokens = mapFromList(tokenList);
         variables = new ArrayList<>();
+        functions = new ArrayList<>();
         //  MAX_LENGTH = knownTokens.entrySet().stream().min(Map.Entry.comparingByKey()).get().getKey().length();
         Optional<Map.Entry<String, Token>> max = knownTokens.entrySet().stream().max(Map.Entry.comparingByKey());
         MAX_LENGTH = max.map(stringTokenEntry -> stringTokenEntry.getKey().length()).orElse(0);
     }
 
-    public static Variable newVariable(String s){
+    public static Variable newVariable(String s) {
         var v = new Variable(s);
         knownTokens.put(s, v);
         variables.add(v);
         return v;
     }
+
+    public static DifferentialOperator newDifferentialOperator(String s, Variable... v) {
+        var diffOp = new DifferentialOperator(s, v);
+        knownTokens.put(s, diffOp);
+        return diffOp;
+    }
+
 
     private static Map<String, Token> mapFromList(List<Token> tokenList) {
         return tokenList.stream().collect(Collectors.toMap(Token::getString, t -> t, (a, b) -> b));

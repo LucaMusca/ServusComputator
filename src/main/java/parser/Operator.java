@@ -68,8 +68,8 @@ public abstract class Operator extends Token {
         this.derivative = (e1,e2,x) -> new AbOp(e1.der(x),this,e2.der(x));
 
         simplifiers.addAll(List.of(
-                (e1, e2) -> new Tuple(e2.is(0) , e1),
-                (e1, e2) -> new Tuple(e1.is(0) && string.equals("-"),new AbFun(Parser.mn,e2)),
+                (e1, e2) -> new Tuple(e2.is(0), e1),
+                (e1, e2) -> new Tuple(e1.is(0) && string.equals("-"), AbFun.create(Parser.mn, e2)),
                 (e1, e2) -> new Tuple(e1.is(0) && !string.equals("-"), e2)
         ));
     }
@@ -82,8 +82,8 @@ public abstract class Operator extends Token {
         this.operation = (a,b) -> a - b;
         this.derivative = (e1,e2,x) -> new AbOp(e1.der(x),this,e2.der(x));
         simplifiers.addAll(List.of(
-                (e1, e2) -> new Tuple(e2.is(0) , e1),
-                (e1, e2) -> new Tuple(e1.is(0),new AbFun(Parser.mn,e2)),
+                (e1, e2) -> new Tuple(e2.is(0), e1),
+                (e1, e2) -> new Tuple(e1.is(0), new AbOp(AbNum.Num(-1), Parser.times, e2)),
                 (e1, e2) -> new Tuple(e1.equals(e2), AbNum.Num(0))
         ));
     }
@@ -137,7 +137,7 @@ class Pow extends Operator{
                         return new AbOp(g,Parser.times,new AbOp(new AbOp(f,Parser.pow, AbNum.Num(((AbNum) g).getValue() - 1)),Parser.times,f.der(x)));
                     return new AbOp(new AbOp(f, Parser.pow, g),
                             Parser.times,
-                            new AbOp(new AbOp(g.der(x), Parser.times, new AbFun(Parser.ln, f)),
+                            new AbOp(new AbOp(g.der(x), Parser.times, AbFun.create(Parser.ln, f)),
                                     Parser.plus,
                                     new AbOp(new AbOp(f.der(x), Parser.times, g),
                                             Parser.divide,
