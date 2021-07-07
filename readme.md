@@ -8,7 +8,7 @@ var y = Parser.newVariable("y");
 var alpha = Parser.newVariable("alpha");
 ```
 And then use them in expressions
-```
+```Java
 AbExp distance = AbExp.toAbExp("sqrt(x^2 + y^2)");
 AbExp e = AbExp.toAbExp("sin(alpha) + x");
 ```
